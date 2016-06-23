@@ -138,7 +138,7 @@ height:30px;
         <div class="box"></div>
         <div class="box"></div>
       </div>
-      <div id="score" style="clear: both;">
+      <div id="score" style="clear: both;margin-top:10px">
         <h3></h3>
          <h2></h2>
       </div></div>
@@ -175,7 +175,7 @@ var colorArray = ["#1abc9c", "#e74c3c", "#16a085", "#8e44ad", "#c0392b", "#3498d
 
 function start() {
 timerStopped=false;
-$('#timer').empty();
+$('#timer').show();
     colorInt = setInterval(function() {
         $(".box").each(function() {
             $(this).css("background-color", $.rand(colorArray))
@@ -184,10 +184,11 @@ $('#timer').empty();
     timerInt = setInterval(function() {
         timer++;
         $('#timer').html(timer);
-        if(timer==10 || !$( "div" ).hasClass('box')){
+        if(timer==60 || !$( "div" ).hasClass('box')){
         	clearInterval(timerInt);
           clearInterval(colorInt);
           timerStopped=true;
+          $('#timer').hide();
           $("#score").find("h2").html("Scored " + Score + " in a min");
         }
     }, 1000)
