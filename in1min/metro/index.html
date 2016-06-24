@@ -190,9 +190,6 @@ var colorArray = ["#00B7C3", "#107C10", "#FFB900", "#E3008C", "#E81123", "#8FCD3
  var timerStopped=true;
 function start() {
 timerStopped=false;
-$('#timer').show();
-
-
     colorInt = setInterval(function() {
         $(".box").each(function() {
             $(this).css("background-color", $.rand(colorArray))
@@ -239,6 +236,7 @@ $(document).on("click touchstart", "#start", function() {
     timer = 60;
     $("#start").toggle();
     $("#stop").toggle();
+    $('#timer').html(timer);
 });
 $('#stop').click(function() {
     location.reload();
