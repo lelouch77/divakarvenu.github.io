@@ -217,7 +217,7 @@ timerStopped=false;
     }, 1000);
     timerInt = setInterval(function() {
         var res = timer % 100;
-        var sec =Math.ceil(timer/100);
+        var sec =Math.floor(timer/100);
           if(timer!=0 )
           {
         $('#timer').html((sec<10?"0"+sec:sec) +":"+ (res<10?"0"+res:res));
