@@ -8,13 +8,29 @@
 #Main{
 
 }
+.disable {
+  pointer-events: none;
+}
+.box2{
+width:41px;
+height:31.5px;
+border:1px solid #e0e0e0;
+}
 .box{
 width:41px;
 height:31.5px;
 border:1px solid #fff;
 float:right;
 }
-
+.noselect,p,h3,h2{
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
 #start button,#stop button{
 width:100px;
 height:30px;
@@ -58,6 +74,7 @@ body{
             <p>You scored a 1 point if first and second selection having same color</p>
             let's see how much you can score in a min.
         </h3>
+        Note : Continious click on same sqaure is not allowed.</br></br>
         <div id="start">
           <button class="btn-success" type="submit" id="btntxt">Start</button>
         </div>
@@ -65,7 +82,10 @@ body{
         <div id="stop">
           <button class="btn-success">Reset</button>
         </div>
-          <h1 id="timer"></h1>
+        <h1 id="timer" class="noselect"></h1>
+        <div>
+          <div class="box2" style="background:white;display:inline-block"></div>
+        </div>
       </div>
     </div>
       <div class="col-md-8 col-md-offset-2" style="margin-bottom:2%;text-align:center"><div id="Main">
@@ -185,7 +205,7 @@ body{
 var colorArray = ["#00B7C3", "#107C10", "#FFB900", "#E3008C", "#E81123", "#8FCD3E"];
  var prevColor = {};
  var Score = 0;
- var  timer = 60;
+ var  timer;
  var  colorInt, timerInt;
  var timerStopped=true;
 function start() {
@@ -196,9 +216,15 @@ timerStopped=false;
         });
     }, 1000);
     timerInt = setInterval(function() {
-        timer--;
-        $('#timer').html(timer);
+        var res = timer % 100;
+        var sec =Math.ceil(timer/100);
+          if(timer!=0 )
+          {
+        $('#timer').html((sec<10?"0"+sec:sec) +":"+ (res<10?"0"+res:res));
+      }
+
         if(timer==0 || !$( "div" ).hasClass('box')){
+          $('#timer').html("00:00");
         	clearInterval(timerInt);
           clearInterval(colorInt);
           timerStopped=true;
@@ -208,23 +234,28 @@ timerStopped=false;
           $("#start").toggle();
          $("#btntxt").html("Play Again");
         }
-    }, 1000)
+          timer--;
+    }, 10)
 }
 
 $(document).on("click touchstart", ".box", function() {
 	if(!timerStopped){
-      if($.isEmptyObject(prevColor)){
-        prevColor.element = $(this);
-        prevColor.color = $(this).css("background-color");
-      }
-      else if(prevColor.color == $(this).css("background-color")){
+     if(prevColor.color == $(this).css("background-color")){
         prevColor.element.hide();
         $(this).hide();
         Score++;
+        prevColor={};
+          $('.box2').css("background-color","white");
       }
       else{
-        prevColor = {}
+        if(!$.isEmptyObject(prevColor))
+          prevColor.element.removeClass('disable');
+        prevColor.element = $(this);
+        prevColor.color = $(this).css("background-color");
+        $(this).addClass('disable');
+          $('.box2').css("background-color",prevColor.color);
       }
+
     }
 });
 
@@ -233,7 +264,7 @@ $(document).on("click touchstart", "#start", function() {
     $("#score").find("h2").empty();
     $('.box').show();
     //$('#Main').html('<div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div> <div class="box"></div>');
-    timer = 60;
+    timer = 6000;
     $("#start").toggle();
     $("#stop").toggle();
     $('#timer').html(timer);
@@ -246,7 +277,8 @@ $(document).ready(function() {
   $(".box").each(function() {
       $(this).css("background-color", $.rand(colorArray))
   });
-    $('#timer').html(timer);
+  var res = timer / 100;
+  $('#timer').html("60:00" );
 });
 
   </script>
